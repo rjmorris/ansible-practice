@@ -1,0 +1,43 @@
+---
+
+- name: Ensure sudo group is present
+  group:
+    name: sudo
+    state: present
+
+- name: Ensure sudo group has sudo privileges
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL:ALL) ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+
+- name: Create an account for a deployment user
+  user:
+    name: "{{ deployer.username }}"
+    password: "{{ deployer.password }}"
+    groups: sudo
+    update_password: on_create
+    state: present
+  register: new_user
+
+# Set the initial shell separately from creating the user. Otherwise, if the
+# user changes the shell, it will get reset the next time the script is run.
+# This will also show up as a change to the user account, which will trigger the
+# password expiration.
+
+- name: Set the initial shell
+  user:
+    name: "{{ deployer.username }}"
+    shell: /bin/bash
+  when: new_user.changed
+
+- name: Force a password change on the first login
+  shell: chage -d 0 "{{ deployer.username }}"
+  when: new_user.changed
+
+- name: Add authorized key
+  authorized_key:
+    user: "{{ deployer.username }}"
+    key: "{{ lookup('file', deployer.public_key) }}"
