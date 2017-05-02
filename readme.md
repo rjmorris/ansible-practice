@@ -61,3 +61,10 @@ TODO: To make this easier to run later for adding more non-root users, consider 
 ```
 ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass
 ```
+
+To run just one or more roles, specify a tag. Available tags may be found in `deploy.yml`.
+
+```
+ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass --tags nodejs
+ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass --tags nodejs,nginx
+```

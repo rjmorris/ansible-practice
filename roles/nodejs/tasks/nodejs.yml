@@ -1,0 +1,32 @@
+---
+
+- name: Add nodesource keys
+  apt_key:
+    url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state=present
+
+- name: Add nodesource apt sources list deb
+  apt_repository:
+    repo='deb https://deb.nodesource.com/node_6.x "{{ ansible_distribution_release }}" main'
+    state=present
+
+- name: Add nodesource apt sources list deb src
+  apt_repository:
+    repo='deb-src https://deb.nodesource.com/node_6.x "{{ ansible_distribution_release }}" main'
+    state=present
+
+- name: Install NodeJS
+  apt:
+    pkg: nodejs
+    state: latest
+    update_cache: true
+
+- name: Install global node packages
+  npm:
+    name: "{{item}}"
+    global: true
+    state: present
+  with_items:
+    - pm2
+    - bower
+    - gulp
