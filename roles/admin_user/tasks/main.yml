@@ -13,10 +13,10 @@
     line: "%sudo ALL=(ALL:ALL) ALL"
     validate: "/usr/sbin/visudo -cf %s"
 
-- name: Create an account for a deployment user
+- name: Create an account for an admin user
   user:
-    name: "{{ deployer.username }}"
-    password: "{{ deployer.password }}"
+    name: "{{ admin_user.username }}"
+    password: "{{ admin_user.password }}"
     groups: sudo
     update_password: on_create
     state: present
@@ -29,15 +29,15 @@
 
 - name: Set the initial shell
   user:
-    name: "{{ deployer.username }}"
+    name: "{{ admin_user.username }}"
     shell: /bin/bash
   when: new_user.changed
 
 - name: Force a password change on the first login
-  shell: chage -d 0 "{{ deployer.username }}"
+  shell: chage -d 0 "{{ admin_user.username }}"
   when: new_user.changed
 
 - name: Add authorized key
   authorized_key:
-    user: "{{ deployer.username }}"
-    key: "{{ lookup('file', deployer.public_key) }}"
+    user: "{{ admin_user.username }}"
+    key: "{{ lookup('file', admin_user.public_key) }}"

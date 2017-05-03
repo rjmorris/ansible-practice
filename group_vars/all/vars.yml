@@ -2,9 +2,9 @@
 
 ansible_python_interpreter: /usr/bin/python3
 
-deployer:
+admin_user:
   username: rjmorris
-  password: "{{ vault.deployer.password }}"
+  password: "{{ vault.admin_user.password }}"
   public_key: ~/.ssh/id_rsa.pub
 
 app_user:
