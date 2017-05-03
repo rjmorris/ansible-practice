@@ -1,0 +1,9 @@
+---
+
+- name: Create an account for the app user
+  user:
+    name: "{{ app_user.username }}"
+    password: "{{ app_user.password }}"
+    shell: /bin/bash
+    update_password: on_create
+    state: present

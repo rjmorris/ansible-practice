@@ -6,3 +6,7 @@ deployer:
   username: rjmorris
   password: "{{ vault.deployer.password }}"
   public_key: ~/.ssh/id_rsa.pub
+
+app_user:
+  username: abs
+  password: "{{ vault.app_user.password }}"

@@ -4,3 +4,4 @@
   become: true
   roles:
   - { role: nodejs, tags: nodejs }
+  - { role: app_user, tags: app_user }
