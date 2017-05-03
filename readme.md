@@ -68,3 +68,11 @@ To run just one or more roles, specify a tag. Available tags may be found in `de
 ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass --tags nodejs
 ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass --tags nodejs,nginx
 ```
+
+Instead of asking for the vault password each time, you can store it in a file and run the command as:
+
+```
+ansible-playbook deploy.yml --vault-password-file=.vault-password --ask-become-pass
+```
+
+The git repo is set up to ignore files named .vault-password, so that's a good place to store it. Be sure to set its permissions to 600.
