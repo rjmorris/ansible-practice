@@ -15,8 +15,8 @@
 
 - name: Create an account for an admin user
   user:
-    name: "{{ admin_user.username }}"
-    password: "{{ admin_user.password }}"
+    name: "{{ admin_user_username }}"
+    password: "{{ admin_user_password }}"
     groups: sudo
     update_password: on_create
     state: present
@@ -29,15 +29,15 @@
 
 - name: Set the initial shell
   user:
-    name: "{{ admin_user.username }}"
+    name: "{{ admin_user_username }}"
     shell: /bin/bash
   when: new_user.changed
 
 - name: Force a password change on the first login
-  shell: chage -d 0 "{{ admin_user.username }}"
+  shell: chage -d 0 "{{ admin_user_username }}"
   when: new_user.changed
 
 - name: Add authorized key
   authorized_key:
-    user: "{{ admin_user.username }}"
-    key: "{{ lookup('file', admin_user.public_key) }}"
+    user: "{{ admin_user_username }}"
+    key: "{{ lookup('file', admin_user_public_key) }}"

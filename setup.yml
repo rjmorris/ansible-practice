@@ -2,6 +2,18 @@
 
 - hosts: all
   remote_user: root
+  vars_prompt:
+    - name: "admin_user_username"
+      prompt: "admin's username"
+      private: no
+    - name: "admin_user_password"
+      prompt: "admin's password"
+      private: yes
+      encrypt: "sha512_crypt"
+      confirm: yes
+    - name: "admin_user_public_key"
+      prompt: "path to admin's SSH public key"
+      private: no
   roles:
   - admin_user
   - ssh

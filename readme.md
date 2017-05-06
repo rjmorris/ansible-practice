@@ -27,6 +27,7 @@ sudo apt install libffi-dev
 conda create -n ansible-testing python=2.7
 source activate ansible-testing
 pip install ansible
+pip install passlib
 ```
 
 # Python 2 vs. Python 3
@@ -48,13 +49,19 @@ For this project, I'm trying out the Python 3 support but will switch to one of 
 
 The deployment process is split into two playbooks: `setup.yml` and `deploy.yml`.
 
-It is expected that `setup.yml` will be run once immediately after creating a fresh droplet. It sets up a non-root user and then disables SSH access for root. Before running this playbook, you should edit the non-root user's username and SSH public key file location in `group_vars/all/vars.yml`. Once this playbook has been run successfully, it cannot be run again as root.
+It is expected that `setup.yml` will be run once immediately after creating a fresh droplet. It sets up a non-root admin user and then disables SSH access for root. Run it as:
 
 ```
 ansible-playbook setup.yml --ask-vault-pass
 ```
 
-TODO: To make this easier to run later for adding more non-root users, consider prompting for the non-root user's info with `vars_prompt`, and consider passing the user to run as with `--user` on the command line.
+It will prompt for the admin user's username, password, and SSH public key filename. You may instead pass these on the command line by running the command as:
+
+```
+ansible-playbook setup.yml --ask-vault-pass --extra-vars="admin_user_username=alice admin_user_public_key=./id_rsa.pub"
+```
+
+Once `setup.yml` has been run successfully, it cannot be run again as root.
 
 `deploy.yml` handles all the rest of the deployment tasks such as installing software, copying the application code, and starting the server.
 

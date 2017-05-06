@@ -2,11 +2,6 @@
 
 ansible_python_interpreter: /usr/bin/python3
 
-admin_user:
-  username: rjmorris
-  password: "{{ vault.admin_user.password }}"
-  public_key: ~/.ssh/id_rsa.pub
-
 app_user:
   username: abs
   password: "{{ vault.app_user.password }}"
