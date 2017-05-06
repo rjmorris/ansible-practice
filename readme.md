@@ -47,9 +47,13 @@ For this project, I'm trying out the Python 3 support but will switch to one of 
 
 # Run ansible
 
-The deployment process is split into two playbooks: `setup.yml` and `deploy.yml`.
+Several ansible playbooks are provided for deploying the application. `setup.yml` should be run first, immediately after creating a fresh droplet. The others may be run as needed.
 
-It is expected that `setup.yml` will be run once immediately after creating a fresh droplet. It sets up a non-root admin user and then disables SSH access for root. Run it as:
+## Playbooks
+
+### `setup.yml`
+
+The only account on a newly-created Digital Ocean droplet is root. The purpose of `setup.yml` is to add a non-root user and to disable root's SSH access. Once `setup.yml` has been run successfully, it cannot be run again, because doing so requires SSH access for root. Afterwards, all playbooks should be run as a non-root admin user.
 
 ```
 ansible-playbook setup.yml --ask-vault-pass
@@ -58,10 +62,28 @@ ansible-playbook setup.yml --ask-vault-pass
 It will prompt for the admin user's username, password, and SSH public key filename. You may instead pass these on the command line by running the command as:
 
 ```
-ansible-playbook setup.yml --ask-vault-pass --extra-vars="admin_user_username=alice admin_user_public_key=./id_rsa.pub"
+ansible-playbook setup.yml --ask-vault-pass --extra-vars="admin_user_username=alice admin_user_public_key=path/to/id_rsa.pub"
 ```
 
-Once `setup.yml` has been run successfully, it cannot be run again as root.
+The admin user will be required to change the password upon logging in for the first time.
+
+### `add_admin.yml`
+
+Use `add_admin.yml` to create additional admin accounts. Like `setup.yml`, you will be prompted for the admin user's username, password, and SSH public key filename.
+
+```
+ansible-playbook add_admin.yml --ask-vault-pass --ask-become-pass
+```
+
+### `delete_admin.yml`
+
+Use `delete_admin.yml` to delete an admin account. You will be prompted for the admin's username.
+
+```
+ansible-playbook delete_admin.yml --ask-vault-pass --ask-become-pass
+```
+
+### `deploy.yml`
 
 `deploy.yml` handles all the rest of the deployment tasks such as installing software, copying the application code, and starting the server.
 
@@ -76,7 +98,9 @@ ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass --tags nodejs
 ansible-playbook deploy.yml --ask-vault-pass --ask-become-pass --tags nodejs,nginx
 ```
 
-Instead of asking for the vault password each time, you can store it in a file and run the command as:
+## Vault
+
+Sensitive information like passwords is stored using ansible vault. The commands above instruct ansible to prompt you for the vault password, but instead you can store it in a file and run the command as:
 
 ```
 ansible-playbook deploy.yml --vault-password-file=.vault-password --ask-become-pass
