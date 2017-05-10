@@ -47,6 +47,8 @@ For this project, I'm trying out the Python 3 support but will switch to one of 
 
 # Run ansible
 
+All ansible files are in the `deployment` subdirectory. Change into that directory to run any of the ansible playbooks.
+
 Several ansible playbooks are provided for deploying the application. `setup.yml` should be run first, immediately after creating a fresh droplet. The others may be run as needed.
 
 ## Playbooks
