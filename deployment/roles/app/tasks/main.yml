@@ -1,0 +1,31 @@
+---
+
+- name: Clone a fresh copy of the repo
+  connection: local
+  become: false
+  git:
+    repo: "{{ repo.url }}"
+    version: "{{ repo.branch }}"
+    dest: "{{ app.local_tmpdir }}"
+    accept_hostkey: yes
+    force: yes
+    update: yes
+
+- name: Create the project root directory
+  file:
+    path: "{{ app.root }}"
+    state: directory
+    owner: "{{ app_user.username }}"
+    recurse: yes
+
+- name: Copy the application files to the server
+  copy:
+    src: "{{ app.local_tmpdir }}/app/"
+    dest: "{{ app.root }}"
+    owner: "{{ app_user.username }}"
+    group: "{{ app_user.username }}"
+
+- name: Install npm modules
+  become_user: "{{ app_user.username }}"
+  npm:
+    path: "{{ app.root }}"

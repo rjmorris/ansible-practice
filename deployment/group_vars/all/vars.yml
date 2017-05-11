@@ -5,3 +5,11 @@ ansible_python_interpreter: /usr/bin/python3
 app_user:
   username: abs
   password: "{{ vault.app_user.password }}"
+
+repo:
+  url: git@github.com:rjmorris/ansible-practice.git
+  branch: master
+
+app:
+  root: /opt/abs
+  local_tmpdir: /tmp/{{ app_user.username }}
