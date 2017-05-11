@@ -13,3 +13,6 @@ repo:
 app:
   root: /opt/abs
   local_tmpdir: /tmp/{{ app_user.username }}
+  name: abs
+  description: ABS@RTI web application
+  port: 3000

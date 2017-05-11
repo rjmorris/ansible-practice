@@ -1,5 +1,15 @@
 ---
 
+- name: Install the systemd service file
+  template:
+    src: service.j2
+    dest: /etc/systemd/system/{{ app.name }}.service
+
+- name: Enable the systemd service
+  service:
+    name: "{{ app.name }}"
+    enabled: yes
+
 - name: Clone a fresh copy of the repo
   connection: local
   become: false
@@ -24,8 +34,10 @@
     dest: "{{ app.root }}"
     owner: "{{ app_user.username }}"
     group: "{{ app_user.username }}"
+  notify: restart app
 
 - name: Install npm modules
   become_user: "{{ app_user.username }}"
   npm:
     path: "{{ app.root }}"
+  notify: restart app
