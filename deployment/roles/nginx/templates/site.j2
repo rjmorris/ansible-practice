@@ -1,0 +1,19 @@
+server {
+    listen 80 default_server;
+    server_name _;
+
+    gzip on;
+    gzip_types
+      text/css
+      text/javascript
+      text/csv
+      application/octet-stream
+      ;
+    gzip_proxied any;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}

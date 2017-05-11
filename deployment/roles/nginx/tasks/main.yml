@@ -1,0 +1,28 @@
+---
+
+- name: Install nginx
+  package:
+    name: nginx
+    state: present
+
+- name: Remove the default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - restart nginx
+
+- name: Install the site's nginx config file
+  template:
+    src: site.j2
+    dest: /etc/nginx/sites-available/{{ app.name }}
+  notify:
+    - restart nginx
+
+- name: Enable the site
+  file:
+    src: /etc/nginx/sites-available/{{ app.name }}
+    dest: /etc/nginx/sites-enabled/{{ app.name }}
+    state: link
+  notify:
+    - restart nginx
